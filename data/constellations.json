@@ -1,0 +1,22 @@
+[
+  {"name":"Orion","abbreviation":"Ori","description":"The Hunter, with bright Betelgeuse, Rigel, and the famous three-star belt.","ra":83.82,"dec":2.0,"bestSeason":"Winter","magnitude":0.45},
+  {"name":"Ursa Major","abbreviation":"UMa","description":"The Great Bear, home to the Big Dipper pointing toward Polaris.","ra":165.93,"dec":57.7,"bestSeason":"Spring","magnitude":1.79},
+  {"name":"Scorpius","abbreviation":"Sco","description":"The Scorpion with brilliant red Antares at its heart.","ra":253.08,"dec":-26.3,"bestSeason":"Summer","magnitude":0.96},
+  {"name":"Leo","abbreviation":"Leo","description":"The Lion with first-magnitude Regulus at its heart.","ra":152.09,"dec":13.16,"bestSeason":"Spring","magnitude":1.35},
+  {"name":"Cassiopeia","abbreviation":"Cas","description":"The Queen, a distinctive W-shape circumpolar constellation.","ra":10.13,"dec":62.24,"bestSeason":"Autumn","magnitude":2.15},
+  {"name":"Cygnus","abbreviation":"Cyg","description":"The Swan, home to the Northern Cross and bright Deneb.","ra":308.17,"dec":42.03,"bestSeason":"Summer","magnitude":1.25},
+  {"name":"Lyra","abbreviation":"Lyr","description":"The Lyre, home to brilliant Vega — third brightest star.","ra":284.74,"dec":36.26,"bestSeason":"Summer","magnitude":0.03},
+  {"name":"Aquila","abbreviation":"Aql","description":"The Eagle with first-magnitude Altair, part of the Summer Triangle.","ra":297.70,"dec":8.87,"bestSeason":"Summer","magnitude":0.76},
+  {"name":"Gemini","abbreviation":"Gem","description":"The Twins Castor and Pollux, a rich zodiac constellation.","ra":113.87,"dec":20.58,"bestSeason":"Winter","magnitude":1.14},
+  {"name":"Taurus","abbreviation":"Tau","description":"The Bull with red giant Aldebaran and the Pleiades star cluster.","ra":68.98,"dec":19.18,"bestSeason":"Winter","magnitude":0.85},
+  {"name":"Virgo","abbreviation":"Vir","description":"The Maiden with Spica and the Virgo galaxy cluster.","ra":190.42,"dec":-4.16,"bestSeason":"Spring","magnitude":0.98},
+  {"name":"Perseus","abbreviation":"Per","description":"The Hero, containing variable star Algol and the Double Cluster.","ra":51.02,"dec":48.33,"bestSeason":"Autumn","magnitude":1.79},
+  {"name":"Andromeda","abbreviation":"And","description":"Princess Andromeda, home to the Great Andromeda Galaxy M31.","ra":0.45,"dec":38.91,"bestSeason":"Autumn","magnitude":2.06},
+  {"name":"Pegasus","abbreviation":"Peg","description":"The Winged Horse, forming the Great Square of Pegasus.","ra":340.37,"dec":19.48,"bestSeason":"Autumn","magnitude":2.42},
+  {"name":"Sagittarius","abbreviation":"Sgr","description":"The Archer, pointing toward the Milky Way galactic center.","ra":283.82,"dec":-27.12,"bestSeason":"Summer","magnitude":1.79},
+  {"name":"Boötes","abbreviation":"Boo","description":"The Herdsman with orange giant Arcturus — fourth brightest star.","ra":213.91,"dec":31.03,"bestSeason":"Spring","magnitude":-0.05},
+  {"name":"Auriga","abbreviation":"Aur","description":"The Charioteer with brilliant Capella — sixth brightest star.","ra":76.63,"dec":42.03,"bestSeason":"Winter","magnitude":0.08},
+  {"name":"Canis Major","abbreviation":"CMa","description":"The Great Dog with Sirius — the brightest star in the night sky.","ra":104.66,"dec":-22.96,"bestSeason":"Winter","magnitude":-1.46},
+  {"name":"Corona Borealis","abbreviation":"CrB","description":"The Northern Crown, a beautiful semicircular arc of stars.","ra":233.68,"dec":30.09,"bestSeason":"Spring","magnitude":2.23},
+  {"name":"Hercules","abbreviation":"Her","description":"The Hero, one of the largest constellations with the M13 globular cluster.","ra":255.64,"dec":27.72,"bestSeason":"Summer","magnitude":2.78}
+]
