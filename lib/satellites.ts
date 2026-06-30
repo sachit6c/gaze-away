@@ -105,9 +105,8 @@ export function getSatellitePassesForNight(
             // Satellite has set — close the pass
             if (startTime && maxTime && maxAltitude >= MIN_ELEVATION) {
               const endTime = new Date(jsDate);
-              const duration = Math.round(
-                (endTime.getTime() - startTime.getTime()) / 1000
-              );
+              const duration =
+                (endTime.getTime() - startTime.getTime()) / 60000;
 
               allPasses.push({
                 satelliteName: tle.name,
@@ -146,9 +145,8 @@ export function getSatellitePassesForNight(
         passCount < MAX_PASSES_PER_SATELLITE
       ) {
         const endTime = new Date(windowEnd);
-        const duration = Math.round(
-          (endTime.getTime() - startTime.getTime()) / 1000
-        );
+        const duration =
+          (endTime.getTime() - startTime.getTime()) / 60000;
 
         allPasses.push({
           satelliteName: tle.name,
