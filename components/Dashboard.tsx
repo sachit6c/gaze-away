@@ -30,6 +30,7 @@ import { DateSelector } from './DateSelector';
 
 interface DashboardProps {
   location: ObserverLocation;
+  onChangeLocation?: () => void;
 }
 
 function formatTime(date: Date): string {
@@ -63,7 +64,12 @@ function TopPickCard({
   );
 }
 
-export function Dashboard({ location }: DashboardProps) {
+function isToday(d: Date): boolean {
+  const now = new Date();
+  return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate();
+}
+
+export function Dashboard({ location, onChangeLocation }: DashboardProps) {
   const [date, setDate] = useState<Date>(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -104,7 +110,10 @@ export function Dashboard({ location }: DashboardProps) {
         throw new Error(`TLE fetch failed: ${tleRes.status}`);
       }
       const tles = (await tleRes.json()) as TLEData[];
-      const rawPasses = getSatellitePassesForNight(location, date, tles);
+      const rawPasses = getSatellitePassesForNight(location, date, tles, {
+        start: nightWindow.eveningTwilight,
+        end: nightWindow.morningTwilight,
+      });
       const scoredPasses = applyScores(rawPasses, (p) => scoreSatellitePass(p));
       setPasses(scoredPasses);
     } catch (err) {
@@ -140,9 +149,17 @@ export function Dashboard({ location }: DashboardProps) {
           <span className="text-2xl">🔭</span>
           <div>
             <h1 className="text-white font-bold text-lg leading-tight">Gaze Away</h1>
-            <p className="text-[#8ab4d4] text-xs truncate max-w-[220px] sm:max-w-xs">
-              {locationName}
-            </p>
+            {onChangeLocation ? (
+              <button
+                onClick={onChangeLocation}
+                className="text-[#8ab4d4] text-xs truncate max-w-[220px] sm:max-w-xs hover:text-white transition-colors flex items-center gap-1 group"
+              >
+                <span className="truncate">{locationName}</span>
+                <svg className="w-3 h-3 flex-shrink-0 opacity-60 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
+              </button>
+            ) : (
+              <p className="text-[#8ab4d4] text-xs truncate max-w-[220px] sm:max-w-xs">{locationName}</p>
+            )}
           </div>
         </div>
         <DateSelector date={date} onChange={setDate} />
@@ -160,7 +177,9 @@ export function Dashboard({ location }: DashboardProps) {
         {(bestPlanet || bestConstellation || bestPass) && (
           <section>
             <h2 className="text-white text-lg font-bold tracking-tight mb-3">
-              Tonight&apos;s Top Picks
+              {isToday(date)
+                ? "Tonight’s Top Picks"
+                : `${date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}’s Top Picks`}
             </h2>
             <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
               {bestPlanet && (

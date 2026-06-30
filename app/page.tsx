@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { ObserverLocation } from '@/lib/types';
-import { LocationGate } from '@/components/LocationGate';
+import { clearLocation, LocationGate } from '@/components/LocationGate';
 import { Dashboard } from '@/components/Dashboard';
 
 export default function Home() {
@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen">
-      <Dashboard location={location} />
+      <Dashboard location={location} onChangeLocation={() => { clearLocation(); setLocation(null); }} />
     </main>
   );
 }

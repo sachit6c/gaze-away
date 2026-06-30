@@ -32,7 +32,11 @@ function SkeletonCard() {
 }
 
 export function PlanetsPanel({ planets, night }: PlanetsPanelProps) {
-  const sorted = [...planets].sort((a, b) => b.viewingScore - a.viewingScore);
+  const sorted = [...planets].sort((a, b) => {
+    if (a.visibleHours === 0 && b.visibleHours > 0) return 1;
+    if (b.visibleHours === 0 && a.visibleHours > 0) return -1;
+    return b.viewingScore - a.viewingScore;
+  });
   const topScore = sorted[0]?.viewingScore ?? 0;
 
   return (
@@ -63,7 +67,7 @@ export function PlanetsPanel({ planets, night }: PlanetsPanelProps) {
                   { label: 'Rise', value: formatTime(planet.riseTime) },
                   { label: 'Set', value: formatTime(planet.setTime) },
                   { label: 'Transit', value: formatTime(planet.transitTime) },
-                  { label: 'Visible', value: planet.visibleHours.toFixed(1) + 'h tonight' },
+                  { label: 'Visible', value: planet.visibleHours > 0 ? planet.visibleHours.toFixed(1) + 'h tonight' : 'Daytime only' },
                 ]}
               />
             </div>

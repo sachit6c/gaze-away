@@ -32,12 +32,28 @@ function getDefaultNightWindow(date: Date): { start: Date; end: Date } {
  * @param tles      Array of TLE data objects to evaluate
  * @returns         All visible passes sorted by start time
  */
+function deduplicatePasses(passes: SatellitePass[]): SatellitePass[] {
+  const result: SatellitePass[] = [];
+  for (const candidate of passes) {
+    const isRedundant = result.some(kept => {
+      const overlapStart = Math.max(kept.startTime.getTime(), candidate.startTime.getTime());
+      const overlapEnd = Math.min(kept.endTime.getTime(), candidate.endTime.getTime());
+      const overlap = Math.max(0, overlapEnd - overlapStart);
+      const candidateDuration = candidate.endTime.getTime() - candidate.startTime.getTime();
+      return candidateDuration > 0 && overlap / candidateDuration > 0.8;
+    });
+    if (!isRedundant) result.push(candidate);
+  }
+  return result;
+}
+
 export function getSatellitePassesForNight(
   location: ObserverLocation,
   date: Date,
-  tles: TLEData[]
+  tles: TLEData[],
+  nightWindow?: { start: Date; end: Date }
 ): SatellitePass[] {
-  const { start: windowStart, end: windowEnd } = getDefaultNightWindow(date);
+  const { start: windowStart, end: windowEnd } = nightWindow ?? getDefaultNightWindow(date);
 
   const observerGd = {
     longitude: satellite.degreesToRadians(location.lon),
@@ -173,5 +189,5 @@ export function getSatellitePassesForNight(
   // Sort all collected passes by start time ascending
   allPasses.sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
-  return allPasses;
+  return deduplicatePasses(allPasses);
 }
