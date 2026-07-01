@@ -38,6 +38,7 @@ export interface ConstellationData {
   setTime: Date | null;
   peakTime: Date | null;
   peakAltitude: number;
+  peakAzimuth: number;
   viewingScore: number;
   isVisible: boolean;
   visibleHours: number;

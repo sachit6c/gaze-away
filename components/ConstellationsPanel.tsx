@@ -2,13 +2,15 @@
 
 import type { ConstellationData, NightWindow } from '@/lib/types';
 import { ObjectCard, formatTime } from './ObjectCard';
+import { directionLabel, altitudePhrase } from '@/lib/format';
+import { PanelHeader, EmptyState } from './PanelChrome';
 
 type ConstellationsPanelProps = {
   constellations: ConstellationData[];
   night: NightWindow | null;
 };
 
-export function ConstellationsPanel({ constellations, night }: ConstellationsPanelProps) {
+export function ConstellationsPanel({ constellations }: ConstellationsPanelProps) {
   const visible = constellations
     .filter((c) => c.isVisible)
     .sort((a, b) => b.viewingScore - a.viewingScore)
@@ -20,28 +22,37 @@ export function ConstellationsPanel({ constellations, night }: ConstellationsPan
     str.length > max ? str.slice(0, max).trimEnd() + '…' : str;
 
   return (
-    <section className="space-y-4">
-      <h2 className="text-white text-xl font-bold tracking-tight">Constellations Tonight ✨</h2>
+    <section className="flex flex-col gap-4">
+      <PanelHeader
+        emoji="✨"
+        title="Constellations"
+        count={constellations.length ? visible.length : undefined}
+        accent="text-violet-300"
+      />
 
-      {visible.length === 0 ? (
-        <p className="text-gray-400 text-sm py-4">
-          No constellations visible tonight from this location.
-        </p>
+      {constellations.length === 0 ? (
+        <EmptyState emoji="✨" message="Calculating tonight's sky…" />
+      ) : visible.length === 0 ? (
+        <EmptyState emoji="🌫️" message="No constellations rise high enough from this location tonight." />
       ) : (
         <div className="space-y-3">
           {visible.map((constellation) => (
             <ObjectCard
               key={constellation.abbreviation}
               title={`${constellation.name} (${constellation.abbreviation})`}
-              subtitle={truncate(constellation.description, 80)}
+              description={truncate(constellation.description, 90)}
               score={constellation.viewingScore}
               type="constellation"
               isTopPick={constellation.viewingScore === topScore && constellation.viewingScore > 0}
+              look={{
+                direction: directionLabel(constellation.peakAzimuth),
+                altitude: altitudePhrase(constellation.peakAltitude),
+              }}
               details={[
-                { label: 'Peak Altitude', value: constellation.peakAltitude.toFixed(1) + '°' },
-                { label: 'Best Viewing', value: formatTime(constellation.peakTime) },
+                { label: 'Peak Alt.', value: constellation.peakAltitude.toFixed(0) + '°' },
+                { label: 'Best Time', value: formatTime(constellation.peakTime) },
                 { label: 'Visible', value: constellation.visibleHours.toFixed(1) + 'h' },
-                { label: 'Best Season', value: constellation.bestSeason },
+                { label: 'Season', value: constellation.bestSeason },
               ]}
             />
           ))}

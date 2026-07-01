@@ -59,18 +59,39 @@ function findSunAtAltitude(
 export function getNightWindow(location: ObserverLocation, date: Date): NightWindow {
   const obs = new Astronomy.Observer(location.lat, location.lon, 0);
 
-  // Start of the calendar day at local noon (UTC) — safe start for evening search
-  const noon = new Date(date);
-  noon.setUTCHours(12, 0, 0, 0);
+  // Anchor the search at the observer's LOCAL noon on the selected day, then walk
+  // forward through the evening. Starting at noon (not UTC noon) guarantees we
+  // are before sunset regardless of the observer's timezone.
+  const localNoon = new Date(date);
+  localNoon.setHours(12, 0, 0, 0);
 
-  // Evening: sun drops below -18° (astronomical twilight end)
-  const eveningTwilight = findSunAtAltitude(obs, noon, -18, -1, 12) ?? new Date(date.getTime() + 6 * 3600_000);
+  // Look for the sun setting below astronomical twilight (-18°). At high summer
+  // latitudes the sun may never get that low, so fall back through nautical,
+  // civil, and finally geometric sunset so we always produce a usable window.
+  const thresholds = [-18, -12, -6, -0.833];
+  let eveningTwilight: Date | null = null;
+  let usedThreshold = -18;
+  for (const t of thresholds) {
+    const ev = findSunAtAltitude(obs, localNoon, t, -1, 16);
+    if (ev) {
+      eveningTwilight = ev;
+      usedThreshold = t;
+      break;
+    }
+  }
 
-  // Morning: sun rises back above -18° — search from midnight
-  const midnight = new Date(date);
-  midnight.setUTCHours(24, 0, 0, 0);
+  // Fallbacks for the (rare) polar-day case where the sun never sets.
+  if (!eveningTwilight) {
+    const fallbackEvening = new Date(localNoon.getTime() + 9 * 3600_000); // ~21:00 local
+    const fallbackMorning = new Date(localNoon.getTime() + 18 * 3600_000); // ~06:00 local next day
+    return { eveningTwilight: fallbackEvening, morningTwilight: fallbackMorning, darkHours: 0 };
+  }
 
-  const morningTwilight = findSunAtAltitude(obs, midnight, -18, 1, 12) ?? new Date(date.getTime() + 18 * 3600_000);
+  // Morning twilight: the matching upward crossing, searched forward FROM dusk so
+  // it is always after the evening time.
+  const morningTwilight =
+    findSunAtAltitude(obs, eveningTwilight, usedThreshold, 1, 16) ??
+    new Date(eveningTwilight.getTime() + 8 * 3600_000);
 
   const darkHours = Math.max(0, (morningTwilight.getTime() - eveningTwilight.getTime()) / 3_600_000);
 
@@ -216,6 +237,7 @@ export function getConstellationsForNight(location: ObserverLocation, date: Date
       const decDeg  = c.dec;
 
       let peakAltitude = -90;
+      let peakAzimuth = 0;
       let peakTime: Date | null = null;
       let riseTime: Date | null = null;
       let setTime: Date | null = null;
@@ -236,6 +258,7 @@ export function getConstellationsForNight(location: ObserverLocation, date: Date
         // Track peak
         if (alt > peakAltitude) {
           peakAltitude = alt;
+          peakAzimuth = hor.azimuth;
           peakTime = stepDate;
         }
 
@@ -273,6 +296,7 @@ export function getConstellationsForNight(location: ObserverLocation, date: Date
         setTime,
         peakTime,
         peakAltitude,
+        peakAzimuth,
         viewingScore: 0,
         isVisible,
         visibleHours,

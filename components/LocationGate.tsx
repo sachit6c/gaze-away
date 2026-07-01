@@ -119,13 +119,18 @@ export function LocationGate({ onLocation }: LocationGateProps) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#080f1a] px-4">
-      <div className="bg-[#080f1a] border border-[#2a4a6e]/50 rounded-2xl p-8 max-w-md w-full mx-auto shadow-2xl">
-        <h1 className="text-2xl font-bold text-white mb-2 text-center">
+    <div className="flex min-h-screen items-center justify-center px-4">
+      <div className="glass w-full max-w-md rounded-3xl border border-white/10 p-8 shadow-2xl">
+        <div className="mb-5 flex justify-center">
+          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-sky-500/30 to-violet-500/20 text-3xl ring-1 ring-white/10">
+            🔭
+          </span>
+        </div>
+        <h1 className="mb-2 text-center text-2xl font-bold tracking-tight text-white">
           Where are you observing from?
         </h1>
-        <p className="text-sm text-[#8ab4d4] text-center mb-8">
-          We need your location to calculate what&apos;s visible in your sky
+        <p className="mb-8 text-center text-sm text-star-blue">
+          We use your location to calculate exactly what&apos;s visible in your sky tonight.
         </p>
 
         {savedLocation && (

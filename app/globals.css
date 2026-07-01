@@ -1,8 +1,123 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-body { background: radial-gradient(ellipse at top, #0d1726 0%, #040810 100%); background-attachment: fixed; color: #f0f4ff; min-height: 100vh; }
-.card { background: rgba(18, 32, 51, 0.7); border: 1px solid rgba(61, 109, 158, 0.3); border-radius: 12px; backdrop-filter: blur(8px); }
+@import "tailwindcss";
+
+/* ── Design tokens ─────────────────────────────────────────────────────────── */
+@theme {
+  --color-space-900: #04060d;
+  --color-space-800: #070c17;
+  --color-space-700: #0d1726;
+  --color-space-600: #122033;
+  --color-space-500: #1a2d47;
+  --color-space-400: #2a4a6e;
+  --color-space-300: #3d6d9e;
+
+  --color-star-gold: #ffd27d;
+  --color-star-blue: #93c5fd;
+  --color-star-white: #f0f4ff;
+  --color-star-dim: #8ba3bd;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
+}
+
+/* ── Base ──────────────────────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  background-color: #04060d;
+  color: #eaf1ff;
+  min-height: 100vh;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Atmospheric night sky ─────────────────────────────────────────────────── */
+/* A fixed, layered starfield sits behind everything. Two parallax layers of
+   procedurally-placed stars twinkle at different rhythms; a soft aurora glow
+   warms the top of the sky. All GPU-cheap (opacity/transform only). */
+.sky {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(1200px 700px at 78% -10%, rgba(61, 109, 158, 0.18), transparent 60%),
+    radial-gradient(900px 600px at 12% 4%, rgba(90, 70, 140, 0.14), transparent 55%),
+    radial-gradient(ellipse at top, #0a1424 0%, #060b16 45%, #04060d 100%);
+}
+
+.sky::before,
+.sky::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background-repeat: repeat;
+  background-position: 0 0;
+}
+
+/* Dense fine stars */
+.sky::before {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, rgba(255, 255, 255, 0.9), transparent),
+    radial-gradient(1px 1px at 120px 80px, rgba(200, 220, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 180px 150px, rgba(255, 255, 255, 0.6), transparent),
+    radial-gradient(1.5px 1.5px at 260px 60px, rgba(255, 245, 220, 0.85), transparent),
+    radial-gradient(1px 1px at 320px 220px, rgba(255, 255, 255, 0.7), transparent),
+    radial-gradient(1px 1px at 90px 260px, rgba(190, 210, 255, 0.6), transparent);
+  background-size: 360px 320px;
+  animation: twinkle 6s ease-in-out infinite;
+}
+
+/* Sparser bright stars, slower rhythm */
+.sky::after {
+  background-image:
+    radial-gradient(2px 2px at 60px 120px, rgba(255, 255, 255, 0.95), transparent),
+    radial-gradient(2px 2px at 240px 40px, rgba(147, 197, 253, 0.9), transparent),
+    radial-gradient(1.5px 1.5px at 400px 180px, rgba(255, 210, 125, 0.9), transparent),
+    radial-gradient(2px 2px at 500px 300px, rgba(255, 255, 255, 0.85), transparent);
+  background-size: 560px 420px;
+  animation: twinkle 9s ease-in-out infinite reverse;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sky::before,
+  .sky::after { animation: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* ── Utilities ─────────────────────────────────────────────────────────────── */
+.glass {
+  background: rgba(13, 23, 38, 0.66);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+
+.text-glow {
+  text-shadow: 0 0 24px rgba(147, 197, 253, 0.35);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(61, 109, 158, 0.4);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(61, 109, 158, 0.65); background-clip: padding-box; }
+
+::selection { background: rgba(147, 197, 253, 0.3); color: #fff; }
+
+/* Score palette (kept for reference / non-Tailwind consumers) */
 .score-excellent { color: #34d399; }
 .score-good { color: #60a5fa; }
 .score-fair { color: #fbbf24; }
